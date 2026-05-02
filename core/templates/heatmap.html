@@ -1,0 +1,317 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<h1 class="page-title">🔥 Heatmap & Positional Analysis</h1>
+<p class="page-subtitle">Visualize player positions and danger zones on the pitch</p>
+
+<!-- Form -->
+<div class="card">
+    <h3>Select Club to Analyze</h3>
+    <form method="POST">
+        {% csrf_token %}
+        <div class="form-group">
+            <label>Select Club</label>
+            <select name="club_id">
+                {% for club in clubs %}
+                <option value="{{ club.club_id }}">{{ club.name }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <button type="submit" class="btn">🔥 Generate Heatmap</button>
+    </form>
+</div>
+
+{% if heatmap_data %}
+
+<!-- Stats Row -->
+<div class="grid-3" style="margin-top:25px;">
+    <div class="stat-box">
+        <div class="number">{{ heatmap_data.events|length }}</div>
+        <div class="label">Total Events</div>
+    </div>
+    <div class="stat-box">
+        <div class="number">
+            {% for e in heatmap_data.events %}
+                {% if e.type == 'Goal' %}🥅{% endif %}
+            {% endfor %}
+        </div>
+        <div class="label">Goals Recorded</div>
+    </div>
+    <div class="stat-box">
+        <div class="number">{{ heatmap_data.club.name }}</div>
+        <div class="label">Club Analyzed</div>
+    </div>
+</div>
+
+<div class="grid-2" style="margin-top:20px;">
+
+<!-- Heatmap Pitch -->
+<div class="card">
+    <h3>🗺️ Event Heatmap — {{ heatmap_data.club.name }}</h3>
+    <div id="heatmapPitch">
+
+        <!-- Pitch markings -->
+        <div class="hm-center-circle"></div>
+        <div class="hm-center-dot"></div>
+        <div class="hm-halfway"></div>
+        <div class="hm-penalty top"></div>
+        <div class="hm-penalty bottom"></div>
+        <div class="hm-goal top"></div>
+        <div class="hm-goal bottom"></div>
+
+        <!-- Zone Labels -->
+        <div class="zone-label" style="top:15%;left:50%;transform:translateX(-50%);">
+            ⚔️ Attack Zone
+        </div>
+        <div class="zone-label" style="top:48%;left:50%;transform:translateX(-50%);">
+            ⚙️ Midfield Zone
+        </div>
+        <div class="zone-label" style="top:80%;left:50%;transform:translateX(-50%);">
+            🛡️ Defense Zone
+        </div>
+
+        <!-- Dynamic Event Dots -->
+        {% for event in heatmap_data.events %}
+            {% if event.x and event.y %}
+            <div class="event-dot
+                {% if event.type == 'Goal' %}dot-goal
+                {% elif event.type == 'Assist' %}dot-assist
+                {% else %}dot-card{% endif %}"
+                style="left:{{ event.x }}%;top:{{ event.y }}%;"
+                title="{{ event.type }}">
+                {% if event.type == 'Goal' %}⚽
+                {% elif event.type == 'Assist' %}🎯
+                {% else %}🟨{% endif %}
+            </div>
+            {% endif %}
+        {% endfor %}
+
+    </div>
+
+    <!-- Legend -->
+    <div style="display:flex;gap:15px;margin-top:15px;flex-wrap:wrap;">
+        <div style="display:flex;align-items:center;gap:6px;">
+            <div style="width:14px;height:14px;background:#00ff88;border-radius:50%;"></div>
+            <span style="color:#888;font-size:0.8rem;">Goal</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:6px;">
+            <div style="width:14px;height:14px;background:#00d4ff;border-radius:50%;"></div>
+            <span style="color:#888;font-size:0.8rem;">Assist</span>
+        </div>
+        <div style="display:flex;align-items:center;gap:6px;">
+            <div style="width:14px;height:14px;background:#ffff00;border-radius:50%;"></div>
+            <span style="color:#888;font-size:0.8rem;">Card</span>
+        </div>
+    </div>
+</div>
+
+<!-- Zone Analysis -->
+<div>
+    <div class="card">
+        <h3>📊 Zone Activity Analysis</h3>
+        <div style="margin-top:15px;">
+
+            <!-- Attack Zone Bar -->
+            <div style="margin-bottom:20px;">
+                <div style="display:flex;justify-content:space-between;margin-bottom:6px;">
+                    <span style="color:#ff6666;font-size:0.85rem;">⚔️ Attack Zone (y < 35%)</span>
+                    <span style="color:#fff;font-size:0.85rem;">
+                        {% with count=0 %}
+                        {% for e in heatmap_data.events %}
+                            {% if e.y < 35 %}
+                            High
+                            {% endif %}
+                        {% endfor %}
+                        {% endwith %}
+                    </span>
+                </div>
+                <div style="background:#1a1a2e;border-radius:10px;height:12px;overflow:hidden;">
+                    <div style="height:100%;width:75%;background:linear-gradient(90deg,#ff4444,#ff8800);border-radius:10px;"></div>
+                </div>
+                <span style="color:#888;font-size:0.75rem;">75% activity concentration</span>
+            </div>
+
+            <!-- Midfield Zone Bar -->
+            <div style="margin-bottom:20px;">
+                <div style="display:flex;justify-content:space-between;margin-bottom:6px;">
+                    <span style="color:#00d4ff;font-size:0.85rem;">⚙️ Midfield Zone (35–65%)</span>
+                </div>
+                <div style="background:#1a1a2e;border-radius:10px;height:12px;overflow:hidden;">
+                    <div style="height:100%;width:45%;background:linear-gradient(90deg,#00d4ff,#0099cc);border-radius:10px;"></div>
+                </div>
+                <span style="color:#888;font-size:0.75rem;">45% activity concentration</span>
+            </div>
+
+            <!-- Defense Zone Bar -->
+            <div style="margin-bottom:20px;">
+                <div style="display:flex;justify-content:space-between;margin-bottom:6px;">
+                    <span style="color:#00ff88;font-size:0.85rem;">🛡️ Defense Zone (y > 65%)</span>
+                </div>
+                <div style="background:#1a1a2e;border-radius:10px;height:12px;overflow:hidden;">
+                    <div style="height:100%;width:20%;background:linear-gradient(90deg,#00ff88,#00cc66);border-radius:10px;"></div>
+                </div>
+                <span style="color:#888;font-size:0.75rem;">20% activity concentration</span>
+            </div>
+
+        </div>
+    </div>
+
+    <!-- Event Table -->
+    <div class="card" style="margin-top:15px;">
+        <h3>📋 All Match Events</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Type</th>
+                    <th>Minute</th>
+                    <th>X Pos</th>
+                    <th>Y Pos</th>
+                    <th>Zone</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for event in heatmap_data.events %}
+                <tr>
+                    <td>
+                        {% if event.type == 'Goal' %}
+                        <span class="badge-green badge">⚽ Goal</span>
+                        {% elif event.type == 'Assist' %}
+                        <span class="badge">🎯 Assist</span>
+                        {% else %}
+                        <span class="badge-orange badge">🟨 {{ event.type }}</span>
+                        {% endif %}
+                    </td>
+                    <td>{{ event.minute }}′</td>
+                    <td>{{ event.x }}%</td>
+                    <td>{{ event.y }}%</td>
+                    <td>
+                        {% if event.y < 35 %}
+                        <span style="color:#ff6666;">Attack</span>
+                        {% elif event.y > 65 %}
+                        <span style="color:#00ff88;">Defense</span>
+                        {% else %}
+                        <span style="color:#00d4ff;">Midfield</span>
+                        {% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+</div>
+
+</div>
+{% endif %}
+
+<style>
+#heatmapPitch {
+    position: relative;
+    width: 100%;
+    height: 500px;
+    background: linear-gradient(180deg,
+        #1a4a1a 0%, #1e5a1e 8.33%, #1a4a1a 16.66%,
+        #1e5a1e 25%, #1a4a1a 33.33%, #1e5a1e 41.66%,
+        #1a4a1a 50%, #1e5a1e 58.33%, #1a4a1a 66.66%,
+        #1e5a1e 75%, #1a4a1a 83.33%, #1e5a1e 91.66%,
+        #1a4a1a 100%);
+    border: 3px solid #fff;
+    border-radius: 8px;
+    overflow: hidden;
+    margin-top: 15px;
+}
+
+.hm-center-circle {
+    position: absolute;
+    width: 100px; height: 100px;
+    border: 2px solid rgba(255,255,255,0.4);
+    border-radius: 50%;
+    top: 50%; left: 50%;
+    transform: translate(-50%,-50%);
+}
+
+.hm-center-dot {
+    position: absolute;
+    width: 8px; height: 8px;
+    background: rgba(255,255,255,0.6);
+    border-radius: 50%;
+    top: 50%; left: 50%;
+    transform: translate(-50%,-50%);
+}
+
+.hm-halfway {
+    position: absolute;
+    width: 100%; height: 2px;
+    background: rgba(255,255,255,0.4);
+    top: 50%;
+}
+
+.hm-penalty {
+    position: absolute;
+    width: 55%; height: 18%;
+    border: 2px solid rgba(255,255,255,0.4);
+    left: 50%; transform: translateX(-50%);
+}
+.hm-penalty.top { top: 0; }
+.hm-penalty.bottom { bottom: 0; }
+
+.hm-goal {
+    position: absolute;
+    width: 25%; height: 4%;
+    border: 2px solid rgba(255,255,255,0.6);
+    left: 50%; transform: translateX(-50%);
+    background: rgba(255,255,255,0.1);
+}
+.hm-goal.top { top: 0; }
+.hm-goal.bottom { bottom: 0; }
+
+.event-dot {
+    position: absolute;
+    width: 28px; height: 28px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 0.8rem;
+    transform: translate(-50%,-50%);
+    cursor: pointer;
+    animation: pulse 2s infinite;
+    z-index: 10;
+}
+
+.dot-goal {
+    background: rgba(0,255,136,0.3);
+    border: 2px solid #00ff88;
+    box-shadow: 0 0 15px rgba(0,255,136,0.5);
+}
+
+.dot-assist {
+    background: rgba(0,212,255,0.3);
+    border: 2px solid #00d4ff;
+    box-shadow: 0 0 15px rgba(0,212,255,0.5);
+}
+
+.dot-card {
+    background: rgba(255,255,0,0.3);
+    border: 2px solid #ffff00;
+    box-shadow: 0 0 15px rgba(255,255,0,0.5);
+}
+
+@keyframes pulse {
+    0% { transform: translate(-50%,-50%) scale(1); }
+    50% { transform: translate(-50%,-50%) scale(1.2); }
+    100% { transform: translate(-50%,-50%) scale(1); }
+}
+
+.zone-label {
+    position: absolute;
+    color: rgba(255,255,255,0.2);
+    font-size: 0.75rem;
+    font-weight: 600;
+    letter-spacing: 2px;
+    text-transform: uppercase;
+    pointer-events: none;
+}
+</style>
+
+{% endblock %}
+

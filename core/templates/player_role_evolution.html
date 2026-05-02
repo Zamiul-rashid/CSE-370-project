@@ -1,0 +1,267 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<h1 class="page-title">👤 Player Role Evolution Tracker</h1>
+<p class="page-subtitle">Track how specific roles evolved across eras and who pioneered them</p>
+
+<!-- Form -->
+<div class="card">
+    <h3>Select a Role to Track</h3>
+    <form method="POST">
+        {% csrf_token %}
+        <div class="grid-2">
+            <div class="form-group">
+                <label>Player Role</label>
+                <select name="role">
+                    {% for role in roles %}
+                    <option value="{{ role }}">{{ role }}</option>
+                    {% endfor %}
+                </select>
+            </div>
+            <div class="form-group">
+                <label>&nbsp;</label>
+                <button type="submit" class="btn" style="width:100%;margin-top:0;">
+                    🔍 Track Role Evolution
+                </button>
+            </div>
+        </div>
+    </form>
+</div>
+
+<!-- Role Cards -->
+<div class="grid-3" style="margin-top:20px;">
+
+    <div class="card" style="border-color:#ff880044;">
+        <div style="font-size:2rem;margin-bottom:10px;">🎭</div>
+        <h3 style="color:#ff8800;">False 9</h3>
+        <p style="color:#888;font-size:0.8rem;line-height:1.6;">
+            A striker who drops deep to create space and link play rather than staying high. Pioneered by Messi under Guardiola at Barcelona.
+        </p>
+        <div style="margin-top:10px;">
+            <span class="badge">2008 — Present</span>
+        </div>
+    </div>
+
+    <div class="card" style="border-color:#00d4ff44;">
+        <div style="font-size:2rem;margin-bottom:10px;">🔄</div>
+        <h3 style="color:#00d4ff;">Inverted Fullback</h3>
+        <p style="color:#888;font-size:0.8rem;line-height:1.6;">
+            A fullback who cuts inside into midfield rather than overlapping. Provides numerical advantage in central areas.
+        </p>
+        <div style="margin-top:10px;">
+            <span class="badge">2013 — Present</span>
+        </div>
+    </div>
+
+    <div class="card" style="border-color:#00ff8844;">
+        <div style="font-size:2rem;margin-bottom:10px;">🧤</div>
+        <h3 style="color:#00ff88;">Sweeper Keeper</h3>
+        <p style="color:#888;font-size:0.8rem;line-height:1.6;">
+            A goalkeeper who acts as an extra defender, coming out to sweep balls behind the defensive line.
+        </p>
+        <div style="margin-top:10px;">
+            <span class="badge">2010 — Present</span>
+        </div>
+    </div>
+
+    <div class="card" style="border-color:#ff44ff44;">
+        <div style="font-size:2rem;margin-bottom:10px;">🎯</div>
+        <h3 style="color:#ff44ff;">Deep Lying Playmaker</h3>
+        <p style="color:#888;font-size:0.8rem;line-height:1.6;">
+            A midfielder who sits deep and dictates play with precise passing. Busquets is the modern archetype of this role.
+        </p>
+        <div style="margin-top:10px;">
+            <span class="badge">2006 — Present</span>
+        </div>
+    </div>
+
+    <div class="card" style="border-color:#ffff0044;">
+        <div style="font-size:2rem;margin-bottom:10px;">💪</div>
+        <h3 style="color:#ffff00;">Box to Box Midfielder</h3>
+        <p style="color:#888;font-size:0.8rem;line-height:1.6;">
+            A dynamic midfielder who contributes both defensively and offensively, covering the entire pitch with stamina.
+        </p>
+        <div style="margin-top:10px;">
+            <span class="badge">Classic — Present</span>
+        </div>
+    </div>
+
+</div>
+
+<!-- Results -->
+{% if lineup_data %}
+<div class="card" style="margin-top:20px;">
+    <h3>📊 Players Found in This Role</h3>
+    {% if lineup_data %}
+    <table>
+        <thead>
+            <tr>
+                <th>Player</th>
+                <th>Match</th>
+                <th>Position</th>
+                <th>Date</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for entry in lineup_data %}
+            <tr>
+                <td>
+                    <strong>
+                        {{ entry.person.first_name }} {{ entry.person.last_name }}
+                    </strong>
+                </td>
+                <td>Match #{{ entry.match.match_id }}</td>
+                <td><span class="badge">{{ entry.position }}</span></td>
+                <td>{{ entry.match.date }}</td>
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+    {% else %}
+    <div style="text-align:center;padding:30px;color:#888;">
+        <p style="font-size:2rem;">📭</p>
+        <p>No players found in this role</p>
+    </div>
+    {% endif %}
+</div>
+{% endif %}
+
+<!-- Role Evolution Timeline -->
+<div class="card" style="margin-top:20px;">
+    <h3>📅 Role Evolution Through History</h3>
+    <div style="position:relative;padding-left:30px;margin-top:20px;">
+        <div style="position:absolute;left:10px;top:0;bottom:0;width:2px;background:linear-gradient(to bottom,#00d4ff,#00ff88);"></div>
+
+        <div style="position:relative;margin-bottom:25px;">
+            <div style="position:absolute;left:-25px;top:8px;width:12px;height:12px;background:#00d4ff;border-radius:50%;"></div>
+            <div style="background:#0a0a1a;border-radius:10px;padding:15px;">
+                <span style="color:#00d4ff;font-weight:700;">2008 — False 9 Era Begins</span>
+                <p style="color:#888;font-size:0.8rem;margin-top:5px;">
+                    Pep Guardiola deploys Messi as a False 9 at Barcelona, revolutionizing modern attacking play.
+                </p>
+                <div style="margin-top:8px;">
+                    <span class="badge">Messi</span>
+                    <span class="badge" style="margin-left:5px;">Barcelona</span>
+                    <span class="badge" style="margin-left:5px;">4-3-3</span>
+                </div>
+            </div>
+        </div>
+
+        <div style="position:relative;margin-bottom:25px;">
+            <div style="position:absolute;left:-25px;top:8px;width:12px;height:12px;background:#00d4ff;border-radius:50%;"></div>
+            <div style="background:#0a0a1a;border-radius:10px;padding:15px;">
+                <span style="color:#00d4ff;font-weight:700;">2010 — Sweeper Keeper Rises</span>
+                <p style="color:#888;font-size:0.8rem;margin-top:5px;">
+                    Manuel Neuer redefines goalkeeping at Bayern Munich, acting as a sweeper and extra outfield player.
+                </p>
+                <div style="margin-top:8px;">
+                    <span class="badge">Neuer</span>
+                    <span class="badge" style="margin-left:5px;">Bayern Munich</span>
+                    <span class="badge" style="margin-left:5px;">4-2-3-1</span>
+                </div>
+            </div>
+        </div>
+
+        <div style="position:relative;margin-bottom:25px;">
+            <div style="position:absolute;left:-25px;top:8px;width:12px;height:12px;background:#00d4ff;border-radius:50%;"></div>
+            <div style="background:#0a0a1a;border-radius:10px;padding:15px;">
+                <span style="color:#00d4ff;font-weight:700;">2013 — Inverted Fullback Emerges</span>
+                <p style="color:#888;font-size:0.8rem;margin-top:5px;">
+                    Guardiola's Bayern use fullbacks Alaba and Lahm in inverted roles to dominate midfield numerically.
+                </p>
+                <div style="margin-top:8px;">
+                    <span class="badge">Alaba</span>
+                    <span class="badge" style="margin-left:5px;">Bayern Munich</span>
+                    <span class="badge" style="margin-left:5px;">4-3-3</span>
+                </div>
+            </div>
+        </div>
+
+        <div style="position:relative;margin-bottom:25px;">
+            <div style="position:absolute;left:-25px;top:8px;width:12px;height:12px;background:#00ff88;border-radius:50%;"></div>
+            <div style="background:#0a0a1a;border-radius:10px;padding:15px;">
+                <span style="color:#00ff88;font-weight:700;">2019 — Trent Alexander-Arnold Redefines RB</span>
+                <p style="color:#888;font-size:0.8rem;margin-top:5px;">
+                    Liverpool's fullback becomes one of the most creative players from a defensive position in history.
+                </p>
+                <div style="margin-top:8px;">
+                    <span class="badge">Alexander-Arnold</span>
+                    <span class="badge" style="margin-left:5px;">Liverpool</span>
+                    <span class="badge" style="margin-left:5px;">4-3-3</span>
+                </div>
+            </div>
+        </div>
+
+        <div style="position:relative;">
+            <div style="position:absolute;left:-25px;top:8px;width:12px;height:12px;background:#00ff88;border-radius:50%;"></div>
+            <div style="background:#0a0a1a;border-radius:10px;padding:15px;">
+                <span style="color:#00ff88;font-weight:700;">2022 — Present: Hybrid Roles Dominate</span>
+                <p style="color:#888;font-size:0.8rem;margin-top:5px;">
+                    Modern football sees players occupying hybrid roles that blur traditional position boundaries completely.
+                </p>
+                <div style="margin-top:8px;">
+                    <span class="badge">Multiple Players</span>
+                    <span class="badge" style="margin-left:5px;">Various Clubs</span>
+                    <span class="badge" style="margin-left:5px;">Fluid Systems</span>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<!-- Pioneer Players Table -->
+<div class="card" style="margin-top:20px;">
+    <h3>🏆 Role Pioneers</h3>
+    <table>
+        <thead>
+            <tr>
+                <th>Role</th>
+                <th>Pioneer</th>
+                <th>Club</th>
+                <th>Era</th>
+                <th>Impact</th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr>
+                <td><span class="badge">False 9</span></td>
+                <td>Lionel Messi</td>
+                <td>Barcelona</td>
+                <td>2008–2012</td>
+                <td><span class="badge-green badge">Revolutionary</span></td>
+            </tr>
+            <tr>
+                <td><span class="badge">Sweeper Keeper</span></td>
+                <td>Manuel Neuer</td>
+                <td>Bayern Munich</td>
+                <td>2010–Present</td>
+                <td><span class="badge-green badge">Revolutionary</span></td>
+            </tr>
+            <tr>
+                <td><span class="badge">Inverted Fullback</span></td>
+                <td>Philipp Lahm</td>
+                <td>Bayern Munich</td>
+                <td>2013–2017</td>
+                <td><span class="badge-green badge">Influential</span></td>
+            </tr>
+            <tr>
+                <td><span class="badge">Deep Lying Playmaker</span></td>
+                <td>Sergio Busquets</td>
+                <td>Barcelona</td>
+                <td>2008–2023</td>
+                <td><span class="badge-green badge">Defining</span></td>
+            </tr>
+            <tr>
+                <td><span class="badge">Box to Box</span></td>
+                <td>Kevin De Bruyne</td>
+                <td>Man City</td>
+                <td>2015–Present</td>
+                <td><span class="badge-green badge">Elite</span></td>
+            </tr>
+        </tbody>
+    </table>
+</div>
+
+{% endblock %}
+

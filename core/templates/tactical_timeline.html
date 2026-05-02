@@ -1,0 +1,104 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<h1 class="page-title">📅 Club Tactical Shift Timeline</h1>
+<p class="page-subtitle">Track how a club's tactical philosophy evolved over the years</p>
+
+<!-- Form -->
+<div class="card">
+    <h3>Select Club</h3>
+    <form method="POST">
+        {% csrf_token %}
+        <div class="form-group">
+            <label>Select Club</label>
+            <select name="club_id">
+                {% for club in clubs %}
+                <option value="{{ club.club_id }}">{{ club.name }}</option>
+                {% endfor %}
+            </select>
+        </div>
+        <button type="submit" class="btn">View Timeline</button>
+    </form>
+</div>
+
+{% if timeline %}
+<div class="card" style="margin-top:20px;">
+    <h3>🏟️ {{ timeline.club.name }} — Tactical Evolution</h3>
+
+    {% if timeline.matches %}
+    <div style="position:relative;padding-left:30px;margin-top:20px;">
+        <div style="position:absolute;left:10px;top:0;bottom:0;width:2px;background:linear-gradient(to bottom,#00d4ff,#0099cc);"></div>
+
+        {% for match in timeline.matches %}
+        <div style="position:relative;margin-bottom:25px;">
+            <div style="position:absolute;left:-25px;top:8px;width:12px;height:12px;background:#00d4ff;border-radius:50%;border:2px solid #000;"></div>
+            <div style="background:#0a0a1a;border:1px solid #2a2a4a;border-radius:10px;padding:15px;">
+                <div style="display:flex;justify-content:space-between;align-items:center;margin-bottom:8px;">
+                    <span style="color:#00d4ff;font-weight:700;font-size:1rem;">
+                        {{ match.year_id }}
+                    </span>
+                    <span style="color:#888;font-size:0.8rem;">{{ match.date }}</span>
+                </div>
+                <div style="color:#fff;margin-bottom:8px;">
+                    {{ match.home_club.name }}
+                    <span style="color:#888;"> vs </span>
+                    {{ match.away_club.name }}
+                </div>
+                <div style="display:flex;gap:8px;flex-wrap:wrap;">
+                    {% if match.formation %}
+                    <span class="badge">📐 {{ match.formation.name }}</span>
+                    {% endif %}
+                    {% if match.tactic %}
+                    <span class="badge-orange badge">⚡ {{ match.tactic.name }}</span>
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+        {% endfor %}
+
+    </div>
+
+    <!-- Summary Table -->
+    <div style="margin-top:30px;">
+        <h3>📊 Formation Usage Summary</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Year</th>
+                    <th>Opponent</th>
+                    <th>Formation</th>
+                    <th>Tactic</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% for match in timeline.matches %}
+                <tr>
+                    <td>{{ match.year_id }}</td>
+                    <td>{{ match.away_club.name }}</td>
+                    <td>
+                        {% if match.formation %}
+                        <span class="badge">{{ match.formation.name }}</span>
+                        {% else %}N/A{% endif %}
+                    </td>
+                    <td>
+                        {% if match.tactic %}
+                        <span class="badge-orange badge">{{ match.tactic.name }}</span>
+                        {% else %}N/A{% endif %}
+                    </td>
+                </tr>
+                {% endfor %}
+            </tbody>
+        </table>
+    </div>
+
+    {% else %}
+    <div style="text-align:center;padding:40px;color:#888;">
+        <p style="font-size:2rem;">📭</p>
+        <p>No matches found for this club.</p>
+    </div>
+    {% endif %}
+</div>
+{% endif %}
+
+{% endblock %}
+

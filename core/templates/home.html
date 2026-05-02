@@ -1,0 +1,93 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<h1 class="page-title">⚽ Football Tactical Evolution Analyzer</h1>
+<p class="page-subtitle">Analyze formations, tactics, and manager philosophies across seasons</p>
+
+<!-- Stats Row -->
+<div class="grid-3" style="margin-bottom:30px;">
+    <div class="stat-box">
+        <div class="number">{{ clubs|length }}</div>
+        <div class="label">Clubs Tracked</div>
+    </div>
+    <div class="stat-box">
+        <div class="number">{{ formations|length }}</div>
+        <div class="label">Formations Analyzed</div>
+    </div>
+    <div class="stat-box">
+        <div class="number">{{ total_matches }}</div>
+        <div class="label">Matches in Database</div>
+    </div>
+</div>
+
+<!-- Features Grid -->
+<div class="grid-2">
+
+    <a href="/formation-comparison/" style="text-decoration:none;">
+        <div class="card">
+            <h3>🔁 Formation Comparison</h3>
+            <p style="color:#888;font-size:0.85rem;">Compare a club's formations across two different seasons side by side.</p>
+        </div>
+    </a>
+
+    <a href="/tactical-timeline/" style="text-decoration:none;">
+        <div class="card">
+            <h3>📅 Tactical Timeline</h3>
+            <p style="color:#888;font-size:0.85rem;">View a club's tactical evolution chronologically over a decade.</p>
+        </div>
+    </a>
+
+    <a href="/formation-builder/" style="text-decoration:none;">
+        <div class="card">
+            <h3>🏗️ Formation Builder</h3>
+            <p style="color:#888;font-size:0.85rem;">Drag and drop players on a virtual pitch to build custom formations.</p>
+        </div>
+    </a>
+
+    <a href="/manager-profiling/" style="text-decoration:none;">
+        <div class="card">
+            <h3>🧠 Manager Profiling</h3>
+            <p style="color:#888;font-size:0.85rem;">Explore manager tactical fingerprints and preferred systems.</p>
+        </div>
+    </a>
+
+    <a href="/tactical-suggestion/" style="text-decoration:none;">
+        <div class="card">
+            <h3>💡 Tactical Suggestion</h3>
+            <p style="color:#888;font-size:0.85rem;">Get formation recommendations based on your team goals and style.</p>
+        </div>
+    </a>
+
+    <a href="/opponent-adaptation/" style="text-decoration:none;">
+        <div class="card">
+            <h3>🎯 Opponent Adaptation</h3>
+            <p style="color:#888;font-size:0.85rem;">See how teams change tactics against Big 6 vs weaker opponents.</p>
+        </div>
+    </a>
+
+    <a href="/player-role-evolution/" style="text-decoration:none;">
+        <div class="card">
+            <h3>👤 Player Role Evolution</h3>
+            <p style="color:#888;font-size:0.85rem;">Track how roles like False 9 or Inverted Fullback evolved over eras.</p>
+        </div>
+    </a>
+
+    <a href="/heatmap/" style="text-decoration:none;">
+        <div class="card">
+            <h3>🔥 Heatmap Analysis</h3>
+            <p style="color:#888;font-size:0.85rem;">Visualize player positions and danger zones on a CSS pitch.</p>
+        </div>
+    </a>
+
+</div>
+
+<!-- Efficiency shortcut -->
+<a href="/tactical-efficiency/" style="text-decoration:none;">
+    <div class="card" style="margin-top:10px; border-color:#00ff8844;">
+        <h3 style="color:#00ff88;">📊 Tactical Efficiency Scoring</h3>
+        <p style="color:#888;font-size:0.85rem;">Data-driven KPI scoring for formations based on win rates and goals.</p>
+    </div>
+</a>
+
+{% endblock %}
+

@@ -1,0 +1,179 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<h1 class="page-title">🧠 Manager Tactical Profiling</h1>
+<p class="page-subtitle">Explore manager philosophies, preferred systems and tactical fingerprints</p>
+
+<!-- Manager Cards -->
+<div class="grid-2" style="margin-bottom:30px;">
+    {% for manager in managers %}
+    <div class="card">
+        <div style="display:flex;align-items:center;gap:15px;margin-bottom:15px;">
+            <div style="width:60px;height:60px;background:linear-gradient(135deg,#00d4ff,#0099cc);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:1.5rem;">
+                🧠
+            </div>
+            <div>
+                <h3 style="margin-bottom:4px;">
+                    {{ manager.person.first_name }} {{ manager.person.last_name }}
+                </h3>
+                <span class="badge">Manager</span>
+            </div>
+        </div>
+
+        <div style="background:#0a0a1a;border-radius:8px;padding:15px;margin-bottom:15px;">
+            <p style="color:#888;font-size:0.8rem;margin-bottom:5px;">PHILOSOPHY</p>
+            <p style="color:#ccc;font-size:0.85rem;line-height:1.6;">
+                {{ manager.philosophy }}
+            </p>
+        </div>
+
+        <!-- Tactical Fingerprint -->
+        <h3 style="margin-bottom:10px;">🎯 Tactical Fingerprint</h3>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+            {% if manager.person.first_name == 'Pep' %}
+            <div class="stat-box">
+                <div class="number" style="font-size:1.5rem;">4-3-3</div>
+                <div class="label">Preferred Formation</div>
+            </div>
+            <div class="stat-box">
+                <div class="number" style="font-size:1.5rem;">65%</div>
+                <div class="label">Avg Possession</div>
+            </div>
+            <div class="stat-box">
+                <div class="number" style="font-size:1.5rem;">High</div>
+                <div class="label">Press Intensity</div>
+            </div>
+            <div class="stat-box">
+                <div class="number" style="font-size:1.5rem;">High</div>
+                <div class="label">Defensive Line</div>
+            </div>
+            {% else %}
+            <div class="stat-box">
+                <div class="number" style="font-size:1.5rem;">4-3-3</div>
+                <div class="label">Preferred Formation</div>
+            </div>
+            <div class="stat-box">
+                <div class="number" style="font-size:1.5rem;">55%</div>
+                <div class="label">Avg Possession</div>
+            </div>
+            <div class="stat-box">
+                <div class="number" style="font-size:1.5rem;">Very High</div>
+                <div class="label">Press Intensity</div>
+            </div>
+            <div class="stat-box">
+                <div class="number" style="font-size:1.5rem;">Medium</div>
+                <div class="label">Defensive Line</div>
+            </div>
+            {% endif %}
+        </div>
+
+        <!-- Key Traits -->
+        <div style="margin-top:15px;">
+            <p style="color:#888;font-size:0.8rem;margin-bottom:8px;">KEY TRAITS</p>
+            <div style="display:flex;flex-wrap:wrap;gap:6px;">
+                {% if manager.person.first_name == 'Pep' %}
+                <span class="badge">Tiki-Taka</span>
+                <span class="badge">Positional Play</span>
+                <span class="badge">High Press</span>
+                <span class="badge">False 9</span>
+                <span class="badge">Inverted Wingers</span>
+                {% else %}
+                <span class="badge">Gegenpressing</span>
+                <span class="badge">Vertical Play</span>
+                <span class="badge">High Intensity</span>
+                <span class="badge">Counter Press</span>
+                <span class="badge">Direct Football</span>
+                {% endif %}
+            </div>
+        </div>
+    </div>
+    {% endfor %}
+</div>
+
+<!-- Comparison Table -->
+<div class="card">
+    <h3>📊 Manager Comparison Table</h3>
+    <table>
+        <thead>
+            <tr>
+                <th>Manager</th>
+                <th>Formation</th>
+                <th>Possession</th>
+                <th>Press</th>
+                <th>Style</th>
+                <th>Defensive Line</th>
+            </tr>
+        </thead>
+        <tbody>
+            {% for manager in managers %}
+            <tr>
+                <td>
+                    <strong>{{ manager.person.first_name }} {{ manager.person.last_name }}</strong>
+                </td>
+                {% if manager.person.first_name == 'Pep' %}
+                <td><span class="badge">4-3-3</span></td>
+                <td>65%</td>
+                <td><span class="badge-green badge">High</span></td>
+                <td>Possession</td>
+                <td>High</td>
+                {% else %}
+                <td><span class="badge">4-3-3</span></td>
+                <td>55%</td>
+                <td><span class="badge-orange badge">Very High</span></td>
+                <td>Gegenpressing</td>
+                <td>Medium</td>
+                {% endif %}
+            </tr>
+            {% endfor %}
+        </tbody>
+    </table>
+</div>
+
+<!-- Tactical Timeline per Manager -->
+<div class="card" style="margin-top:20px;">
+    <h3>📅 Career Tactical Timeline</h3>
+    <div class="grid-2">
+
+        <!-- Pep Guardiola -->
+        <div>
+            <h3 style="color:#00d4ff;margin-bottom:15px;">Pep Guardiola</h3>
+            <div style="position:relative;padding-left:25px;">
+                <div style="position:absolute;left:8px;top:0;bottom:0;width:2px;background:#00d4ff;"></div>
+
+                {% for year in pep_years %}
+                <div style="position:relative;margin-bottom:15px;">
+                    <div style="position:absolute;left:-21px;top:5px;width:10px;height:10px;background:#00d4ff;border-radius:50%;"></div>
+                    <div style="background:#0a0a1a;border-radius:8px;padding:10px;">
+                        <span style="color:#00d4ff;font-weight:700;">{{ year }}</span>
+                        <span class="badge" style="margin-left:8px;">4-3-3</span>
+                    </div>
+                </div>
+                {% endfor %}
+
+            </div>
+        </div>
+
+        <!-- Jurgen Klopp -->
+        <div>
+            <h3 style="color:#00d4ff;margin-bottom:15px;">Jurgen Klopp</h3>
+            <div style="position:relative;padding-left:25px;">
+                <div style="position:absolute;left:8px;top:0;bottom:0;width:2px;background:#00d4ff;"></div>
+
+                {% for year in klopp_years %}
+                <div style="position:relative;margin-bottom:15px;">
+                    <div style="position:absolute;left:-21px;top:5px;width:10px;height:10px;background:#00d4ff;border-radius:50%;"></div>
+                    <div style="background:#0a0a1a;border-radius:8px;padding:10px;">
+                        <span style="color:#00d4ff;font-weight:700;">{{ year }}</span>
+                        <span class="badge-orange badge" style="margin-left:8px;">4-2-3-1</span>
+                    </div>
+                </div>
+                {% endfor %}
+
+            </div>
+        </div>
+
+    </div>
+</div>
+
+{% endblock %}
+

@@ -1,0 +1,201 @@
+{% extends 'base.html' %}
+{% block content %}
+
+<h1 class="page-title">💡 Advanced Tactical Suggestion Engine</h1>
+<p class="page-subtitle">Get the best formation recommendation based on your team goals and playing style</p>
+
+<!-- Input Form -->
+<div class="card">
+    <h3>🎯 Enter Your Team Profile</h3>
+    <form method="POST">
+        {% csrf_token %}
+        <div class="grid-2">
+            <div class="form-group">
+                <label>Primary Team Goal</label>
+                <select name="goal">
+                    <option value="attack">Attack — Score More Goals</option>
+                    <option value="defend">Defend — Keep Clean Sheets</option>
+                    <option value="balanced">Balanced — Control the Game</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Preferred Playing Style</label>
+                <select name="style">
+                    <option value="possession">Possession Based</option>
+                    <option value="pressing">High Pressing</option>
+                    <option value="counter">Counter Attack</option>
+                    <option value="direct">Direct Play</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Squad Strength</label>
+                <select name="strength">
+                    <option value="strong">Strong Squad</option>
+                    <option value="average">Average Squad</option>
+                    <option value="weak">Developing Squad</option>
+                </select>
+            </div>
+            <div class="form-group">
+                <label>Opposition Type</label>
+                <select name="opposition">
+                    <option value="big">Big Team</option>
+                    <option value="mid">Mid Table</option>
+                    <option value="weak">Weaker Side</option>
+                </select>
+            </div>
+        </div>
+        <button type="submit" class="btn">🔍 Get Tactical Suggestion</button>
+    </form>
+</div>
+
+<!-- Suggestion Result -->
+{% if suggestion %}
+<div style="margin-top:25px;">
+
+    <!-- Main Suggestion -->
+    <div class="card" style="border-color:#00ff8844;">
+        <div style="display:flex;align-items:center;gap:15px;margin-bottom:20px;">
+            <div style="width:70px;height:70px;background:linear-gradient(135deg,#00ff88,#00cc66);border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:2rem;">
+                💡
+            </div>
+            <div>
+                <h3 style="color:#00ff88;font-size:1.3rem;">Recommended Formation</h3>
+                <p style="color:#888;font-size:0.85rem;">Based on your team profile</p>
+            </div>
+        </div>
+
+        <div class="grid-2">
+            <div style="background:#0a0a1a;border-radius:10px;padding:20px;text-align:center;">
+                <div style="font-size:3rem;font-weight:700;color:#00ff88;">
+                    {{ suggestion.name }}
+                </div>
+                <div style="color:#888;margin-top:5px;">Formation</div>
+                <p style="color:#ccc;font-size:0.85rem;margin-top:10px;">
+                    {{ suggestion.description }}
+                </p>
+            </div>
+
+            {% if tactic %}
+            <div style="background:#0a0a1a;border-radius:10px;padding:20px;text-align:center;">
+                <div style="font-size:1.8rem;font-weight:700;color:#00d4ff;">
+                    {{ tactic.name }}
+                </div>
+                <div style="color:#888;margin-top:5px;">Recommended Tactic</div>
+                <p style="color:#ccc;font-size:0.85rem;margin-top:10px;">
+                    {{ tactic.description }}
+                </p>
+            </div>
+            {% endif %}
+        </div>
+    </div>
+
+    <!-- Why This Works -->
+    <div class="card" style="margin-top:15px;">
+        <h3>📋 Why This Works</h3>
+        <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:15px;margin-top:15px;">
+            <div style="background:#0a0a1a;border-radius:10px;padding:15px;text-align:center;">
+                <div style="font-size:1.5rem;margin-bottom:8px;">⚔️</div>
+                <div style="color:#00d4ff;font-weight:600;margin-bottom:5px;">Attack</div>
+                <div style="color:#888;font-size:0.8rem;">
+                    {% if suggestion.name == '4-3-3' %}
+                    3 forwards provide width and depth in attack
+                    {% elif suggestion.name == '5-3-2' %}
+                    2 strikers combine effectively on counter
+                    {% else %}
+                    Flexible attacking options across all zones
+                    {% endif %}
+                </div>
+            </div>
+            <div style="background:#0a0a1a;border-radius:10px;padding:15px;text-align:center;">
+                <div style="font-size:1.5rem;margin-bottom:8px;">🛡️</div>
+                <div style="color:#00d4ff;font-weight:600;margin-bottom:5px;">Defense</div>
+                <div style="color:#888;font-size:0.8rem;">
+                    {% if suggestion.name == '4-3-3' %}
+                    Solid back 4 with midfield cover
+                    {% elif suggestion.name == '5-3-2' %}
+                    5 defenders provide excellent solidity
+                    {% else %}
+                    Balanced defensive structure maintained
+                    {% endif %}
+                </div>
+            </div>
+            <div style="background:#0a0a1a;border-radius:10px;padding:15px;text-align:center;">
+                <div style="font-size:1.5rem;margin-bottom:8px;">⚙️</div>
+                <div style="color:#00d4ff;font-weight:600;margin-bottom:5px;">Midfield</div>
+                <div style="color:#888;font-size:0.8rem;">
+                    {% if suggestion.name == '4-3-3' %}
+                    3 midfielders control tempo and transitions
+                    {% elif suggestion.name == '5-3-2' %}
+                    3 midfielders link defense to attack
+                    {% else %}
+                    Midfield dominance through numbers
+                    {% endif %}
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- Historical Success -->
+    <div class="card" style="margin-top:15px;">
+        <h3>🏆 Historical Success with {{ suggestion.name }}</h3>
+        <table>
+            <thead>
+                <tr>
+                    <th>Club</th>
+                    <th>Season</th>
+                    <th>Manager</th>
+                    <th>Achievement</th>
+                </tr>
+            </thead>
+            <tbody>
+                {% if suggestion.name == '4-3-3' %}
+                <tr>
+                    <td>Barcelona</td>
+                    <td>2008/09</td>
+                    <td>Pep Guardiola</td>
+                    <td><span class="badge-green badge">Treble Winners</span></td>
+                </tr>
+                <tr>
+                    <td>Barcelona</td>
+                    <td>2010/11</td>
+                    <td>Pep Guardiola</td>
+                    <td><span class="badge-green badge">UCL Winners</span></td>
+                </tr>
+                <tr>
+                    <td>Liverpool</td>
+                    <td>2018/19</td>
+                    <td>Jurgen Klopp</td>
+                    <td><span class="badge-green badge">UCL Winners</span></td>
+                </tr>
+                {% else %}
+                <tr>
+                    <td>Various Clubs</td>
+                    <td>Multiple</td>
+                    <td>Various</td>
+                    <td><span class="badge">Strong Record</span></td>
+                </tr>
+                {% endif %}
+            </tbody>
+        </table>
+    </div>
+
+</div>
+{% endif %}
+
+<!-- All Formations Reference -->
+<div class="card" style="margin-top:20px;">
+    <h3>📚 All Available Formations</h3>
+    <div class="grid-3" style="margin-top:15px;">
+        {% for formation in formations %}
+        <div style="background:#0a0a1a;border-radius:10px;padding:15px;border:1px solid #2a2a4a;">
+            <div style="font-size:1.3rem;font-weight:700;color:#00d4ff;margin-bottom:5px;">
+                {{ formation.name }}
+            </div>
+            <p style="color:#888;font-size:0.8rem;">{{ formation.description }}</p>
+        </div>
+        {% endfor %}
+    </div>
+</div>
+
+{% endblock %}
+
