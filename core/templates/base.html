@@ -225,20 +225,20 @@
 </head>
 <body>
     <nav>
-        <a href="/" class="logo">⚽ Tactical Analyzer</a>
+        <a href="{% url 'home' %}" class="logo">⚽ Tactical Analyzer</a>
         <ul>
-            <li><a href="/">Home</a></li>
-            <li><a href="/formation-comparison/">Formation</a></li>
-            <li><a href="/tactical-timeline/">Timeline</a></li>
-            <li><a href="/formation-builder/">Builder</a></li>
-            <li><a href="/manager-profiling/">Managers</a></li>
-            <li><a href="/tactical-suggestion/">Suggest</a></li>
-            <li><a href="/opponent-adaptation/">Opponent</a></li>
-            <li><a href="/player-role-evolution/">Roles</a></li>
-            <li><a href="/heatmap/">Heatmap</a></li>
-            <li><a href="/tactical-efficiency/">Efficiency</a></li>
+            <li><a href="{% url 'home' %}">Home</a></li>
+            <li><a href="{% url 'formation_comparison' %}">Formation</a></li>
+            <li><a href="{% url 'tactical_timeline' %}">Timeline</a></li>
+            <li><a href="{% url 'formation_builder' %}">Builder</a></li>
+            <li><a href="{% url 'manager_profiling' %}">Managers</a></li>
+            <li><a href="{% url 'tactical_suggestion' %}">Suggest</a></li>
+            <li><a href="{% url 'opponent_adaptation' %}">Opponent</a></li>
+            <li><a href="{% url 'player_role_evolution' %}">Roles</a></li>
+            <li><a href="{% url 'heatmap' %}">Heatmap</a></li>
+            <li><a href="{% url 'tactical_efficiency' %}">Efficiency</a></li>
             {% if user.is_authenticated %}
-                <li><a href="/admin/">Admin Panel</a></li>
+                <li><a href="{% url 'admin:index' %}">Admin Panel</a></li>
                 <li>
                     <form method="POST" action="{% url 'logout' %}" style="display:inline;">
                         {% csrf_token %}

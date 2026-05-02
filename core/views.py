@@ -1,4 +1,5 @@
 from django.shortcuts import get_object_or_404, render
+from django.contrib.auth.decorators import login_required
 
 from .models import Club, Formation, LineupEntry, Manager, Match, MatchEvent, Player, Season, Tactic
 
@@ -16,6 +17,7 @@ PEP_YEARS = [2008, 2011, 2013, 2016, 2019, 2022]
 KLOPP_YEARS = [2010, 2013, 2015, 2018, 2019, 2022]
 
 
+@login_required
 def home(request):
     # SQL EQUIVALENTS:
     # 1. SELECT * FROM club ORDER BY name ASC;
@@ -31,6 +33,7 @@ def home(request):
     return render(request, 'home.html', context)
 
 
+@login_required
 def formation_comparison(request):
     clubs = Club.objects.all()
     seasons = Season.objects.all().order_by('year')
@@ -54,8 +57,8 @@ def formation_comparison(request):
 
         comparison = {
             'club': Club.objects.get(club_id=club_id),
-            'season1': season1,
-            'season2': season2,
+            'season1': int(season1),
+            'season2': int(season2),
             'matches_s1': list(matches_s1),
             'matches_s2': list(matches_s2),
         }
@@ -68,6 +71,7 @@ def formation_comparison(request):
     })
 
 
+@login_required
 def tactical_timeline(request):
     # SQL EQUIVALENT: SELECT * FROM club ORDER BY name ASC;
     clubs = Club.objects.order_by('name')
@@ -94,12 +98,14 @@ def tactical_timeline(request):
     })
 
 
+@login_required
 def formation_builder(request):
     return render(request, 'formation_builder.html', {
         'formations': Formation.objects.order_by('name'),
     })
 
 
+@login_required
 def manager_profiling(request):
     return render(request, 'manager_profiling.html', {
         'managers': Manager.objects.select_related('person').order_by('person__first_name', 'person__last_name'),
@@ -108,6 +114,7 @@ def manager_profiling(request):
     })
 
 
+@login_required
 def tactical_suggestion(request):
     formations = Formation.objects.order_by('name')
     tactics = Tactic.objects.order_by('name')
@@ -139,6 +146,7 @@ def tactical_suggestion(request):
     })
 
 
+@login_required
 def opponent_adaptation(request):
     clubs = Club.objects.order_by('name')
     analysis = None
@@ -161,6 +169,7 @@ def opponent_adaptation(request):
     })
 
 
+@login_required
 def player_role_evolution(request):
     roles = [
         'False 9',
@@ -183,6 +192,7 @@ def player_role_evolution(request):
     })
 
 
+@login_required
 def heatmap(request):
     clubs = Club.objects.order_by('name')
     heatmap_data = None
@@ -202,6 +212,7 @@ def heatmap(request):
     })
 
 
+@login_required
 def tactical_efficiency(request):
     formations = Formation.objects.order_by('name')
     efficiency_data = []
